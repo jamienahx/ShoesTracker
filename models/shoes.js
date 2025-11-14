@@ -17,6 +17,15 @@ function readShoes() {
 }
 
 function createShoes(data) {
+    const requiredFields = ['type', 'brand', 'size', 'color', 'price', 'acquired_date'];
+
+    // Check each required field
+    for (const field of requiredFields) {
+        if (!data[field]) {
+            // Throw a custom error if missing
+            throw new Error(`${field} is required`);
+        }
+    }
     const stmt = shoesDao.prepare(`
         INSERT INTO shoes(id, type, brand, size, color, price, acquired_date, sold_date, notes)
         VALUES(@id, @type, @brand, @size, @color, @price, @acquired_date, @sold_date, @notes)
@@ -70,13 +79,13 @@ function searchShoes(criteria) {
 
     }
 
-           if(criteria.sizeSmaller) {
+        if(criteria.sizeSmaller) {
         query += ' AND size <= @sizeSmaller';
         params.size = criteria.sizeSmaller;  
 
     }
 
-             if(criteria.type) {
+        if(criteria.type) {
         query += ' AND type = @type';
         params.type = criteria.type;  
 

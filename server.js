@@ -6,8 +6,7 @@ var logger = require('morgan');
 const Database = require('better-sqlite3')
 const db = new Database('shoeDatabase.db');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+
 const shoeRouter = require('./routes/shoes');
 
 var app = express();
@@ -22,8 +21,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/shoes',shoeRouter)
 
 // catch 404 and forward to error handler

@@ -30,8 +30,11 @@ function createNewShoe (req,res) {
         const newShoe = shoesModels.createShoes(req.body);
         res.status(201).json(newShoe);
     }catch(err) {
-        res.status(500).json({message:err.message});
+         if (err.message.includes("required")) {
+            return res.status(400).json({ message: err.message });
+         }
     }
+    res.status(500).json({message:err.message});
 }
 
 function deleteShoe(req, res) {
