@@ -4,7 +4,8 @@ module.exports = {
     displayAllShoes,
     createNewShoe,
     deleteShoe,
-    updateShoe
+    updateShoe,
+    searchShoesByCriteria,
 }
 
 function displayAllShoes (req, res) {
@@ -57,5 +58,19 @@ function updateShoe(req,res) {
     catch(err) {
         res.status(500).json({message:err.message});
     }
+
 }
+    function searchShoesByCriteria(req,res) {
+        try {
+            const searchedShoe = shoesModels.searchShoes(req.body)
+            if(!searchedShoe || searchedShoe.length === 0) {
+                return res.status(404).json({message:"Shoe model not found", data: []});
+            }
+            res.status(200).json({message:"Shoe found!", data: searchedShoe})
+        }catch(err) {
+            res.status(500).json({message:err.message});
+        }
+
+    }
+
 

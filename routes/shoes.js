@@ -8,6 +8,7 @@ router.get('/',shoesController.displayAllShoes);
 router.post('/',shoesController.createNewShoe);
 router.delete('/:id',shoesController.deleteShoe);
 router.put('/:id',shoesController.updateShoe);
+router.post('/search',shoesController.searchShoesByCriteria);
 
 
 module.exports = router;

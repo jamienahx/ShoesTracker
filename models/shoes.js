@@ -5,7 +5,8 @@ module.exports = {
     readShoes,
     createShoes,
     deleteShoesById,
-    updateShoeById
+    updateShoeById,
+    searchShoes
 }
 
 function readShoes() {
@@ -43,6 +44,76 @@ function updateShoeById(id,data) {
         sold_date=@sold_date,
         notes=@notes 
         where id = @id`)
-    const info = stmt.run(data);
+    const info = stmt.run({...data,id});
     return info.changes;
+}
+
+function searchShoes(criteria) {
+    let query = 'SELECT * from shoes where 1=1';
+    const params = {};
+
+    if(criteria.brand) {
+        query += ' AND brand = @brand';
+        params.brand = criteria.brand;  
+
+    }
+
+      if(criteria.color) {
+        query += ' AND color = @color';
+        params.color = criteria.color;  
+
+    }
+
+          if(criteria.sizeGreater) {
+        query += ' AND size >= @sizeGreater';
+        params.sizeGreater = criteria.sizeGreater;  
+
+    }
+
+           if(criteria.sizeSmaller) {
+        query += ' AND size <= @sizeSmaller';
+        params.size = criteria.sizeSmaller;  
+
+    }
+
+             if(criteria.type) {
+        query += ' AND type = @type';
+        params.type = criteria.type;  
+
+    }
+
+    if (criteria.acquiredStart) {
+        query += ' AND acquired_date >= @acquiredStart';
+        params.acquiredStart = criteria.acquiredStart;
+    }
+
+    if (criteria.acquiredEnd) {
+        query += ' AND acquired_date <= @acquiredEnd';
+        params.acquiredEnd = criteria.acquiredEnd;
+    }
+
+    if (criteria.soldStart) {
+        query += ' AND sold_date >= @soldStart';
+        params.soldStart = criteria.soldStart;
+    }
+
+    if (criteria.soldEnd) {
+        query += ' AND sold_date <= @soldEnd';
+        params.soldEnd = criteria.soldEnd;
+    }
+
+     if (criteria.priceGreater) {
+        query += ' AND price>= @priceGreater';
+        params.priceGreater = criteria.priceGreater;
+    }
+
+    if (criteria.priceSmaller) {
+        query += ' AND price <= @priceSmaller';
+        params.priceSmaller = criteria.priceSmaller;
+    }
+
+    const stmt = shoesDao.prepare(query);
+    return stmt.all(params);
+
+
 }
