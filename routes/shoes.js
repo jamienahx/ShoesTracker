@@ -5,6 +5,7 @@ const router = express.Router();
 const shoesController = require('../controllers/shoes.js');
 
 router.get('/',shoesController.displayAllShoes);
+router.get('/:id',shoesController.displayShoesById);
 router.post('/',shoesController.createNewShoe);
 router.delete('/:id',shoesController.deleteShoe);
 router.put('/:id',shoesController.updateShoe);

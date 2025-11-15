@@ -6,7 +6,8 @@ module.exports = {
     createShoes,
     deleteShoesById,
     updateShoeById,
-    searchShoes
+    searchShoes,
+    readShoesById
 }
 
 function readShoes() {
@@ -14,6 +15,11 @@ function readShoes() {
     const stmt = shoesDao.prepare('SELECT * from shoes');
     return stmt.all();
 
+}
+
+function readShoesById(id){
+     const stmt = shoesDao.prepare('SELECT * FROM shoes WHERE id = ?');
+    return stmt.get(id);
 }
 
 function createShoes(data) {
@@ -38,15 +44,29 @@ function createShoes(data) {
 function deleteShoesById(id) {
     const stmt = shoesDao.prepare('DELETE from shoes where ID = ?');
     const info = stmt.run(id);
-    return info.changes;
+    return info.changes; //changes tells yoy how many rows were affected after running the query
 }
 
 function updateShoeById(id,data) {
+    const requiredFields = ['type', 'brand', 'size', 'color', 'price', 'acquired_date'];
+
+    // Check each required field
+    for (const field of requiredFields) {
+        if (!data[field]) {
+            // Throw a custom error if missing
+            throw new Error(`${field} is required`);
+        }
+        
+    }
+
+    data.size = Number(data.size); //force the user input for size to be a number.
+
     const stmt = shoesDao.prepare(`
         UPDATE shoes
         SET 
         type = @type,
         brand=@brand,
+        size = @size,
         color=@color,
         price=@price,
         acquired_date=@acquired_date,
@@ -60,6 +80,11 @@ function updateShoeById(id,data) {
 function searchShoes(criteria) {
     let query = 'SELECT * from shoes where 1=1';
     const params = {};
+
+      if(criteria.id) {
+        query += ' AND id = @id';
+        params.id = Number(criteria.id);
+    }
 
     if(criteria.brand) {
         query += ' AND brand = @brand';

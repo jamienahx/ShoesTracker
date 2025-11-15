@@ -6,6 +6,7 @@ module.exports = {
     deleteShoe,
     updateShoe,
     searchShoesByCriteria,
+    displayShoesById
 }
 
 function displayAllShoes (req, res) {
@@ -14,7 +15,7 @@ function displayAllShoes (req, res) {
         const displayedShoes = shoesModels.readShoes();
     
         if(!displayedShoes || displayedShoes.length === 0) {
-            return res.status(200).json({message:"No shoes found", data: []});
+            return res.status(404).json({message:"No shoes found", data: []});
         }
 
         res.status(200).json(displayedShoes);
@@ -25,6 +26,19 @@ function displayAllShoes (req, res) {
 
 }
 
+function displayShoesById (req, res) {
+    try{
+    const displayedShoeId = shoesModels.readShoesById(req.params.id);
+     if(!displayedShoeId) {
+            return res.status(404).json({message:"Shoe Id not found", data: []});
+        }
+
+        res.status(200).json(displayedShoeId);
+    } catch (err) {
+        res.status(500).json({message:err.message});
+    }
+}
+
 function createNewShoe (req,res) {
     try{
         const newShoe = shoesModels.createShoes(req.body);
@@ -33,8 +47,9 @@ function createNewShoe (req,res) {
          if (err.message.includes("required")) {
             return res.status(400).json({ message: err.message });
          }
+          res.status(500).json({message:err.message});
     }
-    res.status(500).json({message:err.message});
+   
 }
 
 function deleteShoe(req, res) {
@@ -57,12 +72,15 @@ function updateShoe(req,res) {
             return res.status(404).json({message:"Shoe model not found"});
         }
         res.status(200).json({message:"Successfully updated"});
-    }
-    catch(err) {
-        res.status(500).json({message:err.message});
+        } catch(err) {
+        if (err.message.includes("required")) {
+            return res.status(400).json({ message: err.message });      
+            }
+         res.status(500).json({message:err.message});
+
+        }
     }
 
-}
     function searchShoesByCriteria(req,res) {
         try {
             const searchedShoe = shoesModels.searchShoes(req.body)
