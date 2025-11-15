@@ -13,13 +13,13 @@ module.exports = {
 function readShoes() {
 
     const stmt = shoesDao.prepare('SELECT * from shoes');
-    return stmt.all();
+    return stmt.all(); //all --> all rows, an array
 
 }
 
 function readShoesById(id){
      const stmt = shoesDao.prepare('SELECT * FROM shoes WHERE id = ?');
-    return stmt.get(id);
+    return stmt.get(id); //get --> single row, object or undefined
 }
 
 function createShoes(data) {
@@ -44,7 +44,7 @@ function createShoes(data) {
 function deleteShoesById(id) {
     const stmt = shoesDao.prepare('DELETE from shoes where ID = ?');
     const info = stmt.run(id);
-    return info.changes; //changes tells yoy how many rows were affected after running the query
+    return info.changes; //changes tells you how many rows were affected after running the query
 }
 
 function updateShoeById(id,data) {
