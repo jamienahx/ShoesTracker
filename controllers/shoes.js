@@ -15,7 +15,7 @@ function displayAllShoes (req, res) {
         const displayedShoes = shoesModels.readShoes();
     
         if(!displayedShoes || displayedShoes.length === 0) {
-            return res.status(404).json({message:"No shoes found", data: []});
+            return res.status(404).json({message:"No shoes found"});
         }
 
         res.status(200).json(displayedShoes);
@@ -30,7 +30,7 @@ function displayShoesById (req, res) {
     try{
     const displayedShoeId = shoesModels.readShoesById(req.params.id);
      if(!displayedShoeId) {
-            return res.status(404).json({message:"Shoe Id not found", data: []});
+            return res.status(404).json({message:"Shoe Id not found"});
         }
 
         res.status(200).json(displayedShoeId);
@@ -85,7 +85,7 @@ function updateShoe(req,res) {
         try {
             const searchedShoe = shoesModels.searchShoes(req.body)
             if(!searchedShoe || searchedShoe.length === 0) {
-                return res.status(404).json({message:"Shoe model not found", data: []});
+                return res.status(404).json({message:"Shoe model not found"});
             }
             res.status(200).json({message:"Shoe found!", data: searchedShoe})
         }catch(err) {
